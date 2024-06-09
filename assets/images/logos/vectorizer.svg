@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:svg="http://www.w3.org/2000/svg" viewBox="0 0 198.2 210">
+  <defs>
+    <style>
+      .cls-1 {
+        stroke-dasharray: 0 0 16.7 16.7;
+      }
+
+      .cls-1, .cls-2 {
+        stroke-miterlimit: 10;
+        stroke-width: 16.7px;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        fill: none;
+      }
+
+      .cls-1, .cls-2, .cls-4, .cls-5 {
+        stroke: #337ab7;
+      }
+
+      .cls-3 {
+        stroke-width: 0px;
+      }
+
+      .cls-4 {
+        stroke-width: 4.4px;
+      }
+
+      .cls-4, .cls-5 {
+        fill: #337ab7;
+        fill-rule: evenodd;
+        stroke-linejoin: round;
+      }
+
+      .cls-5 {
+        stroke-width: 0px;
+      }
+    </style>
+  </defs>
+  <g id="svg903" inkscape:version="1.0 (4035a4f, 2020-05-01)" sodipodi:docname="vectorizer-logo.svg">
+    <sodipodi:namedview id="namedview905" bordercolor="#666666" borderopacity="1" gridtolerance="10" guidetolerance="10" inkscape:current-layer="svg903" inkscape:cx="550.99138" inkscape:cy="155.21374" inkscape:document-rotation="0" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-height="1160" inkscape:window-maximized="0" inkscape:window-width="2134" inkscape:window-x="323" inkscape:window-y="201" inkscape:zoom="1.1015935" objecttolerance="10" pagecolor="#ffffff" showgrid="false"/>
+    <path class="cls-3" d=""/>
+    <path id="path3550" class="cls-4" d="M106.4,83.6l52.7-62v81.4c-11.4-17.2-32.7-25-52.7-19.4Z"/>
+    <path id="path3510-6" class="cls-5" d="M156.3,29.6" sodipodi:nodetypes="cc"/>
+    <path id="path4056" class="cls-1" d="M22.8,20.6l36.2,88.1" sodipodi:nodetypes="cc"/>
+    <path id="path4098" class="cls-2" d="M61.4,116l23.7,57.8h14.9s52-130.1,52-130.1" sodipodi:nodetypes="cccc"/>
+    <path class="cls-3" d=""/>
+  </g>
+</svg>
