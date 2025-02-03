@@ -10,7 +10,7 @@ body{width:100%;min-height:100vh;vertical-align:baseline;word-wrap:break-word;co
 body,input,button,select,optgroup,option,textarea,blockquote,dd,dl,figure,form,pre,.h1,.h2,.h3,.h4,.h5,.h6,h1,h2,h3,h4,h5,h6{font-family:"SF Pro SC","SF Pro Text","SF Pro Icons",PingFang SC,Lantinghei SC,Microsoft Yahei,Hiragino Sans GB,Microsoft Sans Serif,WenQuanYi Micro Hei,sans-serif;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased}
 body,html{height:100%;margin:0;padding:0;border:0}
 a{color:#1d232b;outline:0!important;text-decoration:none}
-a:hover{text-decoration:none;color:#009688}
+a:hover{text-decoration:none;color:#2D8CEB} /*## 网址标签颜色*/
 p{color:#1d232b;margin:0;white-space:normal;word-break:break-all} 
 
 /*--------------------------------------------------------------
@@ -137,7 +137,7 @@ a>i.sidebar-more{transform:scale(.8)}
 /*.header-mini-btn input:checked+svg .line--1,.header-mini-btn input:checked+svg .line--3{--offset:-105.1770175568}*/
 .header-mini-btn label{cursor:pointer}
 .header-mini-btn path{transition:all .5s cubic-bezier(.645,.045,.355,1),stroke .2s ease}
-.header-mini-btn label:hover path{ stroke:#f1404b}
+.header-mini-btn label:hover path{ stroke:#F1404B} /*##顶部首页左侧菜单按钮颜色*/
 .bulletin{box-sizing:border-box;height:25px;line-height:25px;overflow:hidden}
 .bulletin ul{margin:0;padding:0;list-style-type:none;font-size:14px}
 @media (min-width:768px){.navbar{padding:0 1rem}
@@ -186,14 +186,14 @@ a>i.sidebar-more{transform:scale(.8)}
 .text-height-xl{line-height:2!important}
 
 /*--------------------------------------------------------------
-## URL box style
+## URL box style  
 --------------------------------------------------------------*/
-.text-gray{color:#009688}
+.text-gray{color:#333333} /*分类名称颜色*/
 .overflowClip_1{overflow:hidden;-o-text-overflow:ellipsis;text-overflow:ellipsis;word-break:break-all;display:-webkit-box!important;-webkit-line-clamp:1;-webkit-box-orient:vertical}
 .overflowClip_1{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block!important}
 .overflowClip_2{overflow:hidden;-o-text-overflow:ellipsis;text-overflow:ellipsis;word-break:break-all;display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .url-card .url-body{transform:translateY(0px);-webkit-transform:translateY(0px);-moz-transform:translateY(0px);-webkit-transition:all 0.3s ease;-moz-transition:all 0.3s ease;-o-transition:all 0.3s ease;transition:all 0.3s ease}
-.url-card .url-body:hover{transform:translateY(-6px);-webkit-transform:translateY(-6px);-moz-transform:translateY(-6px);box-shadow:0 26px 40px -24px rgba(0,36,100,.3);-webkit-box-shadow:0 26px 40px -24px #0096884d;-moz-box-shadow:0 26px 40px -24px rgba(0,36,100,.3)}
+.url-card .url-body:hover{transform:translateY(-6px);-webkit-transform:translateY(-6px);-moz-transform:translateY(-6px);box-shadow:0 26px 40px -24px rgba(0,36,100,.3);-webkit-box-shadow:0 26px 40px -24px #2D8CEB4d;-moz-box-shadow:0 26px 40px -24px rgba(0,36,100,.3)} /*标签阴影颜色（4d代表浅色）*/
 .url-card .url-like{position:absolute;top:5px;right:10px;opacity:0;transition:opacity .3s}
 .url-card .url-body:hover .url-like{opacity:1}
 .url-card .url-info{overflow:hidden;padding-right:5px}
@@ -218,7 +218,7 @@ a>i.sidebar-more{transform:scale(.8)}
 .url-card .max .tga a{font-size:75%;padding:.125rem .4rem;background:rgba(134,134,134,.1);color:#888;border-radius:10px;transition:.3s}
 .url-card .max .tga a:not(.no-tag):hover{background:#f1404b;color:#fff}
 .home-like{cursor:pointer}
-.home-like:hover{color:#f1404b}
+.home-like:hover{color:#F1404B}
 .home-like-hide{opacity:0!important;transform:scale(3) translateY(-25px)!important}
 .url-card a.togo:hover i{text-shadow:0 0 5px} 
 .panel-body .url-card.shortcode-url .card{background:rgba(136,136,136,.1)}
@@ -465,7 +465,7 @@ footer.main-footer{padding:20px 30px;margin-top:0px}
 .search-modal li.menu-item a{font-size:12px;padding:.375rem .875rem;background:rgba(136,136,136,.1);border-radius:50px}
 .btn-search{position:relative;background-color:rgba(150,150,150,.16);transition:.2s ease-out}
 .btn-search:hover,.btn-search.current{color:#fff!important;background-color:#f1404b;box-shadow:0 5px 20px -3px rgba(249,100,90,.6)}
-.btn-search.current:after{content:"";position:absolute;bottom:-17px;left:0;right:0;margin:0 auto;width:0;border:10px solid transparent;border-top-color:#f1404b}
+.btn-search.current:after{content:"";position:absolute;bottom:-17px;left:0;right:0;margin:0 auto;width:0;border:10px solid transparent;border-top-color:#F1404B}
 
 /*--------------------------------------------------------------
 ## custom style
@@ -993,7 +993,7 @@ input.nav-link:disabled,input.nav-link[readonly]{background-color:transparent;op
 .list-grid.list-grid-padding .list-content{padding:0 0 0 .75rem}
 }
 /*--------------------------------------------------------------
-## grey style
+## grey style  侧边栏鼠标悬停颜色
 --------------------------------------------------------------*/
 .io-grey-mode .sidebar-logo{background:#fff}
 .io-grey-mode .page-header{box-shadow:none}
@@ -1001,11 +1001,11 @@ input.nav-link:disabled,input.nav-link[readonly]{background-color:transparent;op
 .io-grey-mode .border-color{border-color:transparent!important}
 .io-grey-mode .sidebar-nav .flex-bottom a,.io-grey-mode .sidebar-menu-inner a{color:#515C6B}
 .io-grey-mode .sidebar-item ul{background:none}
-.io-grey-mode .sidebar-show,.io-grey-mode .sidebar-item>a:hover{color:#f1404b;background:none}
+.io-grey-mode .sidebar-show,.io-grey-mode .sidebar-item>a:hover{color:#2D8CEB;background:none}
 .io-grey-mode .sidebar-popup div{background:#dadbdd}
 .io-grey-mode .sidebar-popup::before{border-color:transparent #dadbdd transparent}
 .io-grey-mode .sidebar-nav,.io-grey-mode .sidebar-popup.sidebar-menu-inner ul li{background:#f0f2f4}
-.io-grey-mode .sidebar-item li>a:hover,.io-grey-mode .sidebar-popup>div>ul>li>a:hover{color:#f1404b;background:none}
+.io-grey-mode .sidebar-item li>a:hover,.io-grey-mode .sidebar-popup>div>ul>li>a:hover{color:#2D8CEB;background:none}
 
 /*--------------------------------------------------------------
 ## black style
