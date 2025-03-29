@@ -1,360 +1,1233 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><head>
-    <meta charset="UTF-8">
-    <title>Blender常用插件整理</title>
-    <style>
-        :root {
-            --main-blue: #2196F3;
-            --hover-blue: #1976D2;
-        }
+<html lang="zh-CN">
 
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .toolbar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .search-box {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid var(--main-blue);
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        .export-btn {
-            padding: 12px 20px;
-            background: var(--main-blue);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .export-btn:hover {
-            background: var(--hover-blue);
-        }
-
-        .stats {
-            margin: 15px 0;
-            color: #666;
-            font-size: 0.9em;
-        }
-
-        .tab-nav {
-            display: flex;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--main-blue);
-        }
-
-        .tab-btn {
-            padding: 12px 30px;
-            background: #fff;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            color: #666;
-            transition: all 0.3s;
-        }
-
-        .tab-btn.active {
-            background: var(--main-blue);
-            color: white;
-        }
-
-        .tab-content {
-            display: none;
-            background: white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .plugins-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .plugins-table th,
-        .plugins-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .plugins-table th {
-            background-color: var(--main-blue);
-            color: white;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .plugins-table th:first-child,
-        .plugins-table td:first-child {
-            width: 40px;
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        .sort-indicator {
-            margin-left: 5px;
-            font-size: 0.8em;
-        }
-
-        .install-check {
-            transform: scale(1.2);
-            cursor: pointer;
-        }
-
-        .download-btn {
-            display: inline-block;
-            padding: 8px 16px;
-            background-color: var(--main-blue);
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-
-        .download-btn:hover {
-            background-color: var(--hover-blue);
-        }
-
-        .version {
-            background-color: #e3f2fd;
-            padding: 4px 8px;
-            border-radius: 3px;
-            font-size: 0.9em;
-        }
-
-        @media (max-width: 768px) {
-            .plugins-table {
-                font-size: 14px;
+    <head>
+        <meta charset="UTF-8">
+        <title>Blender常用插件整理</title>
+        <style>
+            :root {
+                --main-blue: #2196F3;
+                --hover-blue: #1976D2;
             }
             
-            .plugins-table td {
-                padding: 10px;
+            body {
+                font-family: Arial, sans-serif;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #f5f5f5;
+            }
+            
+            h1 {
+                text-align: center;
+                color: #333;
+                margin-bottom: 20px;
+            }
+            
+            .toolbar {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+            
+            .search-box {
+                flex: 1;
+                padding: 12px;
+                border: 2px solid var(--main-blue);
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+            
+            .export-btn {
+                padding: 12px 20px;
+                background: var(--main-blue);
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background 0.3s;
+            }
+            
+            .export-btn:hover {
+                background: var(--hover-blue);
+            }
+            
+            .stats {
+                margin: 15px 0;
+                color: #666;
+                font-size: 0.9em;
+            }
+            
+            .tab-nav {
+                display: flex;
+                margin-bottom: 20px;
+                border-bottom: 2px solid var(--main-blue);
             }
             
             .tab-btn {
-                padding: 10px 20px;
-                font-size: 14px;
+                padding: 12px 30px;
+                background: #fff;
+                border: none;
+                cursor: pointer;
+                font-size: 16px;
+                color: #666;
+                transition: all 0.3s;
             }
-        }
-    </style>
-    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
-</head>
-<body>
-    <h1>Blender常用插件整理</h1>
-    
-    <div class="toolbar">
-        <input type="text" id="searchInput" class="search-box" placeholder="输入插件名称或功能进行搜索...">
-        <button class="export-btn" onclick="exportToExcel()">导出Excel</button>
-    </div>
-    
-    <div class="stats" id="stats"></div>
-    
-    <div class="tab-nav">
-        <button class="tab-btn active" data-tab="third-party">第三方插件</button>
-        <button class="tab-btn" data-tab="official">官方库插件</button>
-    </div>
-
-    <!-- 第三方插件 -->
-    <div id="third-party" class="tab-content active">
-        <table class="plugins-table">
-            <thead>
-                <tr>
-                    <th><input type="checkbox" id="selectAllThird" class="install-check"></th>
-                    <th onclick="sortTable()">插件名称 <span class="sort-indicator"></span></th>
-                    <th>功能描述</th>
-                    <th>版本号</th>
-                    <th>下载链接</th>
-                </tr>
-            </thead>
-            <tbody><tr><td><input type="checkbox" class="install-check"></td><td>Acs Railing Generator</td><td>程序栏杆</td><td><span class="version">1.0.0</span></td><td><a href="https://pan.baidu.com/s/1O0KqFcYz-q_lZ-iyC6WJXw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>All Material List</td><td>列表显示材质/图像/灯光等等(可批量替换材质)</td><td><span class="version">2.7.7</span></td><td><a href="https://pan.baidu.com/s/14ZmI4P1a19Eyl2suBnke_A?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Alpha Trees Pro</td><td>透明面片树</td><td><span class="version">2.3.6</span></td><td><a href="https://pan.baidu.com/s/1CspFv2NbetIcH8Z9FXLdhw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Archipack PRO</td><td>室内建筑建模</td><td><span class="version">2.7.2</span></td><td><a href="https://pan.baidu.com/s/1ilPDZ_sfTrK3CXWMNS8eaw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Auto-Constraints</td><td>自动锁定轴向</td><td><span class="version">1.1.0</span></td><td><a href="https://pan.baidu.com/s/14jS5id3O9-L42NXbV1jtfA?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Auto Terrainer</td><td>自动地形</td><td><span class="version">1.2.0</span></td><td><a href="https://pan.baidu.com/s/1wpNMnBhzC5ZYrNGxn6ThqQ?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Auto UV</td><td>一键展uv</td><td><span class="version">1.0.1</span></td><td><a href="https://pan.baidu.com/s/1JESV37TfI7V1TmvSfcbBCQ?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Auto Rig pro</td><td>自动绑定-周年礼物</td><td><span class="version">3.74.40</span></td><td><a href="https://pan.baidu.com/s/1e4aD68Ru1NteIRXbIPW6Bw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>B4D Tools</td><td>几何节点仿C4D工具</td><td><span class="version">1.4.2</span></td><td><a href="https://pan.baidu.com/s/1J9wO9Bl2OpWxtsQXbsvJQA?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>BlenderBezierUtils</td><td>贝塞尔工具</td><td><span class="version">铁锅炖内置</span></td><td><a href="https://pan.baidu.com/s/1qxny4sNtbj_KJC26rw6EOQ?pwd=2333" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>BetterFBX</td><td>更好的FBX导入导出工具</td><td><span class="version">6.0.5</span></td><td><a href="https://pan.baidu.com/s/16punKi4wfCZ3Oz6lHHfhDw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Better Lighting V2</td><td>灯光照明插件-周年礼物</td><td><span class="version">2.1.0</span></td><td><a href="https://pan.baidu.com/s/1E-Zk2ofh2HWQhYqoarcjrQ?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Blenderkit</td><td>在线模型材质资产库</td><td><span class="version">offcial</span></td><td><a href="https://www.blenderkit.com/get-blenderkit/" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>BoxCutter</td><td>硬表面建模</td><td><span class="version">7.20.7</span></td><td><a href="https://pan.baidu.com/s/1mMxDDVKKIJXCRdzNQ4I0Jg?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Baga Ivy</td><td>藤曼生成器</td><td><span class="version">2.0.2</span></td><td><a href="https://pan.baidu.com/s/1o1tw1vh1ZfzyUExcfvrvhQ?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>CAD sketcher</td><td>类CAD绘图插件(Gumroad)</td><td><span class="version">0.27.6</span></td><td><a href="https://pan.baidu.com/s/1kfCHI1QOgc3VB10feUSGRA?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>CAD Transform</td><td>类CAD变换吸附</td><td><span class="version">2.0.6</span></td><td><a href="https://pan.baidu.com/s/1HUdUWV9ZBT2At1YU0wO8Bg?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Camera Calibration Pvr</td><td>相机求反(Github)</td><td><span class="version">0.5</span></td><td><a href="https://pan.baidu.com/s/1Jot96CJgjVhFAxxUouo5lQ?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Clean Panels</td><td>N面板清理</td><td><span class="version">7.0.3</span></td><td><a href="https://pan.baidu.com/s/1TNJ_0ioasuFrLteBLc42Dw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Color helper</td><td>色卡插件</td><td><span class="version">铁锅炖内置</span></td><td><a href="https://pan.baidu.com/s/1qxny4sNtbj_KJC26rw6EOQ?pwd=2333" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Construction Lines</td><td>仿SU构造线建模</td><td><span class="version">0.9.693</span></td><td><a href="https://pan.baidu.com/s/1-y5vczCqrp90EriBQx_VFA?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Curves to Mesh</td><td>可编辑曲面建模转网格</td><td><span class="version">2.8.1</span></td><td><a href="https://pan.baidu.com/s/1pVLOIlKj0Pa7ji4PHSxi8w?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Deepbump</td><td>法线贴图生成(Github)</td><td><span class="version">0.8.0</span></td><td><a href="https://pan.baidu.com/s/1mIM4mqMC-2hhrNZkn_sibw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Easeam</td><td>一键标记缝合边</td><td><span class="version">1.1.0</span></td><td><a href="https://pan.baidu.com/s/15i8rCjL_5ZoOrXMr1MxIDg?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Engon</td><td>开源多资产库资源管理(Github)</td><td><span class="version">1.5</span></td><td><a href="https://pan.baidu.com/s/162_A3NevUDq9vzULqPbkGA?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Flow Pro Manager</td><td>资产管理</td><td><span class="version">4.0.2</span></td><td><a href="https://pan.baidu.com/s/1r3FkIPg_U0paLERizKGxvA?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Geo Scatter</td><td>物体植物散布插件</td><td><span class="version">5.5.1</span></td><td><a href="https://pan.baidu.com/s/1U5xFq-ZCmZBUt_tw5FiGjw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>G scatter</td><td>免费散布插件(gscatter.com)</td><td><span class="version">0.11.8</span></td><td><a href="https://pan.baidu.com/s/1oeswlX1Zy3v5eUYHaCULnw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Hard Ops</td><td>硬表面建模</td><td><span class="version">0.9.88.7</span></td><td><a href="https://pan.baidu.com/s/1-7Qt2auZCBELisOGOxiUVA?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>HDRI Sun Aligner</td><td>HDR 日光对齐(Github)</td><td><span class="version">1.6</span></td><td><a href="https://pan.baidu.com/s/1qKrMT2nvputhyfBRMdrlGg?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Homebuilder4</td><td>家装定制(creativedesigner3d.github.io)</td><td><span class="version">4.0.0</span></td><td><a href="https://pan.baidu.com/s/1EZ5xspre8H1PN3vaFKfEXA?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Inset Outset</td><td>模型挤出偏移插件</td><td><span class="version">0.0.2</span></td><td><a href="https://pan.baidu.com/s/1ssSX9wON-Kqpezx-j0KSCw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Instant Clean</td><td>一键清理</td><td><span class="version">2.2.0</span></td><td><a href="https://pan.baidu.com/s/1ERJGafQTtrrtFXmSte_YMw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Kekit</td><td>小工具合集</td><td><span class="version">3.3.8</span></td><td><a href="https://pan.baidu.com/s/1jPYn8JNGQ0e4pi_5EAgJsg?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Leafig</td><td>叶片生成 图片转模型</td><td><span class="version">1.0.11</span></td><td><a href="https://pan.baidu.com/s/1apilzNY8Ieadle-sBj5M4A?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>MP7TOOLS </td><td>铁锅炖小组开源版M3</td><td><span class="version">铁锅炖内置</span></td><td><a href="https://pan.baidu.com/s/1qxny4sNtbj_KJC26rw6EOQ?pwd=2333" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>MACHIN3tools</td><td>U KNOW M3</td><td><span class="version">1.11.1</span></td><td><a href="https://pan.baidu.com/s/1SshOBzIINmpiC_AVEIM8ug?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Max to blender</td><td>max文件导入</td><td><span class="version">2024</span></td><td><a href="https://pan.baidu.com/s/1xK4CZ4pZyiuyX39lng_6tA?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>MeasureIt ARCH</td><td>measureit测量工具(Github)</td><td><span class="version">0.5.0</span></td><td><a href="https://pan.baidu.com/s/1R3WklzdcbOmiHFIbvjs6oQ?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Mesh Cleaner</td><td>网格清理</td><td><span class="version">1.0.0</span></td><td><a href="https://pan.baidu.com/s/1XuFWC12bZXhjRLm0eog5MQ?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>N Panel Sub Tabs</td><td>N面板管理</td><td><span class="version">2.0.22</span></td><td><a href="https://pan.baidu.com/s/1exud4cb1JtU9xb7DfVtazw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Node Preview</td><td>节点预览</td><td><span class="version">1.2.1</span></td><td><a href="https://pan.baidu.com/s/1oVsCGzoEM4FKPHkrMwATeg?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Perspective Plotter</td><td>相机求反</td><td><span class="version">1.2.0</span></td><td><a href="https://pan.baidu.com/s/1z8NNUe5b_LFLnhAVFpyncg?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Photographer</td><td>灯光相机插件</td><td><span class="version">5.4.14</span></td><td><a href="https://pan.baidu.com/s/11BYK3Nb7eZ68_jb2RGkHhQ?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Pie Menu Editor</td><td>自定义饼菜单</td><td><span class="version">1.18.8</span></td><td><a href="https://pan.baidu.com/s/1B_gVRzAOxn_5SNUFMrJAAQ?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Pidgeon Tool Bag</td><td>工具包含超级降噪</td><td><span class="version">2.6.1</span></td><td><a href="https://pan.baidu.com/s/1CdU7K0ZHR_D8TtPc3DjuyQ?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Polyhaven</td><td>polyhaven开源资产库插件版</td><td><span class="version">1.1.10</span></td><td><a href="https://pan.baidu.com/s/1YTu5OpF47StNoT5PjiSXTw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Profiler</td><td>门框阴角阳角框架精美形状轮廓高级曲线倒角工具</td><td><span class="version">1.8.0</span></td><td><a href="https://pan.baidu.com/s/1TKPsY6kw6C0G1cecDDz5ww?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>QRemeshify</td><td>一键重拓扑</td><td><span class="version">1.1.0</span></td><td><a href="https://pan.baidu.com/s/18tS-5ycFH43b0ZfJdf4ozw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Quad Remesher</td><td>一键重拓扑</td><td><span class="version">1.3.0</span></td><td><a href="https://pan.baidu.com/s/15zaF0i0amGbTBRdMUsqNCQ?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Quick Decals</td><td>快速贴花插件</td><td><span class="version">2.1.0</span></td><td><a href="https://pan.baidu.com/s/1FDepqUnAM1vxGEAhqPBUDw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Quick font</td><td>字体管理</td><td><span class="version">1.1</span></td><td><a href="https://pan.baidu.com/s/1-hcwDoDiIjluzWo2JYukjw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>RARA blender helper</td><td>blender综合助手</td><td><span class="version">铁锅炖内置</span></td><td><a href="https://pan.baidu.com/s/1qxny4sNtbj_KJC26rw6EOQ?pwd=2333" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>REDHALO max2blender</td><td>红地蛋MAX模型导入</td><td><span class="version">0.9.5</span></td><td><a href="https://pan.baidu.com/s/1-ouIO8QqpXYRmQlpEMzWgw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>REDHALO SketchUp Importer</td><td>红地蛋SU模型导入</td><td><span class="version">0.23.2</span></td><td><a href="https://pan.baidu.com/s/1-ouIO8QqpXYRmQlpEMzWgw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Realtime materials</td><td>材质插件</td><td><span class="version">2.1.6</span></td><td><a href="https://pan.baidu.com/s/1AKZqQjWeetpu8ywBxGNERA?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Render Raw</td><td>类camera raw调色插件</td><td><span class="version">1.0.1</span></td><td><a href="https://pan.baidu.com/s/1NHITEYLBaDp7jGIRvdVRiQ?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Render Tools</td><td>材质ID分层渲染</td><td><span class="version">1.5.0</span></td><td><a href="https://pan.baidu.com/s/1b9sm7WaP7FR4DIVUIz66ZA?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Round Insert</td><td>解决圆角内插穿模</td><td><span class="version">2.1.1</span></td><td><a href="https://pan.baidu.com/s/1GUC-jdF_zA9lodz3W0UTOQ?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>SimpleTabs</td><td>n面板管理插件</td><td><span class="version">1.2.4</span></td><td><a href="https://pan.baidu.com/s/1e8RdyChUa2om2y7Bq9V8yA?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>ShaderPlus</td><td>高级着色节点含焦散-周年礼物</td><td><span class="version">4.0.4</span></td><td><a href="https://pan.baidu.com/s/1cAH3GnpQCpFmr7-vonjUvw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Stamp it</td><td>一键贴花</td><td><span class="version">1.2.1</span></td><td><a href="https://pan.baidu.com/s/12dobyMeyoHGylMKTN6H9dg?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Super Texture</td><td>单图一键生成pbr材质</td><td><span class="version">1.8.5</span></td><td><a href="https://pan.baidu.com/s/1nGnlqveXPV8lYNYPcV8KGw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>ToOptimize Tools</td><td>场景优化工具</td><td><span class="version">1.2.7.4</span></td><td><a href="https://pan.baidu.com/s/1zphcCrlUS8_fJX4lexUqRg?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>TraceGenius</td><td>类图像描摹图片转曲线</td><td><span class="version">3.2.0</span></td><td><a href="https://pan.baidu.com/s/1pEHsqgl1gERfWNWOGJ9qng?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>User Translate</td><td>翻译神器</td><td><span class="version">1.0.22</span></td><td><a href="https://pan.baidu.com/share/init?surl=MB47nNN-iUGnH2pTmTSmig&amp;pwd=bude" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Vector to 3D</td><td>矢量图转3D</td><td><span class="version">1.0.0</span></td><td><a href="https://pan.baidu.com/s/19YyREs2A3UOVVW7Hkglfvw?pwd=plug" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>w_mesh参数网格</td><td>参数化基础网格物体</td><td><span class="version">铁锅炖内置</span></td><td><a href="https://pan.baidu.com/s/1qxny4sNtbj_KJC26rw6EOQ?pwd=2333" class="download-btn">下载</a></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>输入法助手</td><td>修复Blender英文输入问题</td><td><span class="version">铁锅炖内置</span></td><td><a href="https://pan.baidu.com/s/1qxny4sNtbj_KJC26rw6EOQ?pwd=2333" class="download-btn">下载</a></td></tr></tbody>
-        </table>
-    </div>
-
-    <!-- 官方库插件 -->
-    <div id="official" class="tab-content">
-        <table class="plugins-table">
-            <thead>
-                <tr>
-                    <th><input type="checkbox" id="selectAllOfficial" class="install-check"></th>
-                    <th onclick="sortTable()">插件名称 <span class="sort-indicator"></span></th>
-                    <th>功能描述</th>
-                </tr>
-            </thead>
-            <tbody><tr><td><input type="checkbox" class="install-check"></td><td>3D Print Toolbox</td><td>3D打印工具箱，有检查模型是否规范的功能</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>3D Viewport Pie Menus</td><td>3D视口饼菜单</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>A.N.T.Landscape</td><td>地形插件</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Align Tools</td><td>对齐工具</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Archimesh</td><td>工具是特别设计用来生成建筑元素</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>AutoCAD DXF</td><td>CAD DXF格式导入</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>BagaPie</td><td>几何节点参数化对楼梯、管道、瓷砖等</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>BAM</td><td>auto mat 自动材质处理</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>BetterFBX</td><td></td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Bolt Factory</td><td>创建螺丝和螺母，并附有选项可以调节螺丝/螺母，沉槽类型和螺丝头类型</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Bonsai</td><td>BIM工具</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Bool Tool</td><td>布尔工具</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Colorista</td><td>朔朔和辣椒的调色插件</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Curve Tools</td><td>插件提供对曲线进行操作和编辑的扩展工具。包含了几个 CAD 风格的曲线工具。</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Edge flow</td><td>帮助调整网格几何体以适应曲面</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Edit Mesh Tools</td><td>为Blender增加了几个内置工具中没有的工具</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Extra Curve Objects</td><td>（curve）包含许多创建曲线物体的插件组合</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Extra Mesh Objects</td><td>（mesh）创建网格物体的插件组合</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>F2</td><td>高级F 创建边/面</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Hot Node</td><td>节点组保存复用</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Import Autodesk MAX </td><td>导入max文件</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Import/Export Autocad DXF</td><td>导入导出dxf</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Is Key Free</td><td>用于检查快捷键的可用性和与之相关的编辑器类型</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Loop Tools</td><td>桥接放样等</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Matalogue</td><td>节点树列表</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Material Utilities</td><td>材质工具</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Measurelt</td><td>用于在视口中显示度量值，精确度量设计对象</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Mio3 UV</td><td>展uv插件</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Modifier List</td><td>修改器饼菜单/更好用的修改器工具</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Modifier Tools</td><td>管理修改器的小工具集</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>ND</td><td>Non-Destructive 非破坏性建模</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Node Arrange</td><td>节点排列工具</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Node Wrangler</td><td>节点快捷键式操作</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Place Helper</td><td>辣椒酱放置助手</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Simple Deform Helper</td><td>辣椒酱简易型形变助手</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Sun Position</td><td>太阳位置&amp;hdri位置匹配</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>SZM</td><td>根据首字母搜索节点  支持中英文</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>tinyCAD Mesh tools</td><td>添加CAD的某些功能</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>Tri-lighting</td><td>一键三点打光</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>UniV</td><td>UV编辑插件</td></tr><tr><td><input type="checkbox" class="install-check"></td><td>UV Toolkit</td><td>UV工具</td></tr></tbody>
-        </table>
-    </div>
-
-    <script>
-        let currentSortState = 0; // 0:默认 1:正序 2:倒序
-        let originalOrder = [];
-
-        document.addEventListener('DOMContentLoaded', () => {
-            saveOriginalOrder();
             
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    switchTab(this.dataset.tab, this);
-                    saveOriginalOrder();
-                    currentSortState = 0;
-                    this.closest('.tab-nav').querySelectorAll('.sort-indicator').forEach(ind => ind.textContent = '');
-                });
-            });
-
-            initCheckboxes();
-            bindSearch();
-            updateStats();
-        });
-
-        function exportToExcel() {
-            const activeTable = document.querySelector('.tab-content.active table');
-            const rows = Array.from(activeTable.querySelectorAll('tbody tr:not([style*="none"])'));
+            .tab-btn.active {
+                background: var(--main-blue);
+                color: white;
+            }
             
-            const wsData = [
-                [
-                    '选中状态',
-                    '插件名称',
-                    '功能描述',
-                    ...(activeTable.id === 'third-party' ? ['版本号', '下载链接'] : [])
-                ]
-            ];
-
-            rows.forEach(row => {
-                const cells = [
-                    row.querySelector('.install-check').checked ? '✓' : '✗',
-                    row.cells[1].textContent,
-                    row.cells[2].textContent
-                ];
-                
-                if (activeTable.id === 'third-party') {
-                    cells.push(
-                        row.cells[3].textContent,
-                        row.cells[4].querySelector('a').href
-                    );
+            .tab-content {
+                display: none;
+                background: white;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+            }
+            
+            .tab-content.active {
+                display: block;
+            }
+            
+            .plugins-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            
+            .plugins-table th,
+            .plugins-table td {
+                padding: 15px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+            
+            .plugins-table th {
+                background-color: var(--main-blue);
+                color: white;
+                cursor: pointer;
+                position: relative;
+            }
+            
+            .plugins-table th:first-child,
+            .plugins-table td:first-child {
+                width: 40px;
+                text-align: center;
+                vertical-align: middle;
+            }
+            
+            .sort-indicator {
+                margin-left: 5px;
+                font-size: 0.8em;
+            }
+            
+            .install-check {
+                transform: scale(1.2);
+                cursor: pointer;
+            }
+            
+            .download-btn {
+                display: inline-block;
+                padding: 8px 16px;
+                background-color: var(--main-blue);
+                color: white;
+                text-decoration: none;
+                border-radius: 4px;
+                transition: background-color 0.3s;
+            }
+            
+            .download-btn:hover {
+                background-color: var(--hover-blue);
+            }
+            
+            .version {
+                background-color: #e3f2fd;
+                padding: 4px 8px;
+                border-radius: 3px;
+                font-size: 0.9em;
+            }
+            
+            @media (max-width: 768px) {
+                .plugins-table {
+                    font-size: 14px;
                 }
                 
-                wsData.push(cells);
-            });
-
-            const ws = XLSX.utils.aoa_to_sheet(wsData);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "插件列表");
-            XLSX.writeFile(wb, `Blender插件_${document.querySelector('.tab-btn.active').textContent}.xlsx`);
-        }
-
-        function saveOriginalOrder() {
-            const activeTable = document.querySelector('.tab-content.active table');
-            originalOrder = Array.from(activeTable.tBodies[0].rows);
-        }
-
-        function sortTable() {
-            const activeTable = document.querySelector('.tab-content.active table');
-            const tbody = activeTable.tBodies[0];
-            const rows = Array.from(tbody.rows);
-            const indicator = activeTable.querySelector('th:nth-child(2) .sort-indicator');
-
-            currentSortState = (currentSortState + 1) % 3;
-
-            if (currentSortState === 0) {
-                tbody.append(...originalOrder);
-                indicator.textContent = '';
-            } else {
-                const sortOrder = currentSortState === 1 ? 1 : -1;
-                rows.sort((a, b) => {
-                    const nameA = a.cells[1].textContent.toLowerCase();
-                    const nameB = b.cells[1].textContent.toLowerCase();
-                    return sortOrder * nameA.localeCompare(nameB);
-                });
-                tbody.append(...rows);
-                indicator.textContent = sortOrder === 1 ? '↑' : '↓';
+                .plugins-table td {
+                    padding: 10px;
+                }
+                
+                .tab-btn {
+                    padding: 10px 20px;
+                    font-size: 14px;
+                }
             }
-            updateStats();
-        }
+        </style>
+        <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+    </head>
 
-        function switchTab(tabName, clickedButton) {
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.getElementById(tabName).classList.add('active');
-            clickedButton.classList.add('active');
-            handleSearch();
-            updateStats();
-        }
+    <body>
+        <h1>Blender常用插件整理</h1>
 
-        function initCheckboxes() {
-            document.querySelectorAll('[id^="selectAll"]').forEach(checkbox => {
-                checkbox.addEventListener('click', function(e) {
-                    const table = e.target.closest('table');
-                    table.querySelectorAll('.install-check:not([id^="selectAll"])').forEach(cb => {
-                        cb.checked = e.target.checked;
+        <div class="toolbar">
+            <input type="text" id="searchInput" class="search-box" placeholder="输入插件名称或功能进行搜索...">
+            <button class="export-btn" onclick="exportToExcel()">导出Excel</button>
+        </div>
+
+        <div class="stats" id="stats"></div>
+
+        <div class="tab-nav">
+            <button class="tab-btn active" data-tab="third-party">第三方插件</button>
+            <button class="tab-btn" data-tab="official">官方库插件</button>
+        </div>
+
+        <!-- 第三方插件 -->
+        <div id="third-party" class="tab-content active">
+            <table class="plugins-table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAllThird" class="install-check"></th>
+                        <th onclick="sortTable()">插件名称 <span class="sort-indicator"></span></th>
+                        <th>功能描述</th>
+                        <th>版本号</th>
+                        <th>下载链接</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Acs Railing Generator</td>
+                        <td> 程序栏杆</td>
+                        <td> <span class="version">1.0.0</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1O0KqFcYz-q_lZ-iyC6WJXw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> All Material List</td>
+                        <td> 列表显示材质/图像/灯光等等(可批量替换材质)</td>
+                        <td> <span class="version">2.7.7</span></td>
+                        <td> <a href="https://pan.baidu.com/s/14ZmI4P1a19Eyl2suBnke_A?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Alpha Trees Pro</td>
+                        <td> 透明面片树</td>
+                        <td> <span class="version">2.3.6</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1CspFv2NbetIcH8Z9FXLdhw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Archipack PRO</td>
+                        <td> 室内建筑建模</td>
+                        <td> <span class="version">2.7.2</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1ilPDZ_sfTrK3CXWMNS8eaw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Auto-Constraints</td>
+                        <td> 自动锁定轴向</td>
+                        <td> <span class="version">1.1.0</span></td>
+                        <td> <a href="https://pan.baidu.com/s/14jS5id3O9-L42NXbV1jtfA?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Auto Terrainer</td>
+                        <td> 自动地形</td>
+                        <td> <span class="version">1.2.0</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1wpNMnBhzC5ZYrNGxn6ThqQ?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Auto UV</td>
+                        <td> 一键展uv</td>
+                        <td> <span class="version">1.0.1</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1JESV37TfI7V1TmvSfcbBCQ?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Auto Rig pro</td>
+                        <td> 自动绑定-周年礼物</td>
+                        <td> <span class="version">3.74.40</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1e4aD68Ru1NteIRXbIPW6Bw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> B4D Tools</td>
+                        <td> 几何节点仿C4D工具</td>
+                        <td> <span class="version">1.4.2</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1J9wO9Bl2OpWxtsQXbsvJQA?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> BlenderBezierUtils</td>
+                        <td> 贝塞尔工具</td>
+                        <td> <span class="version">铁锅炖内置</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1qxny4sNtbj_KJC26rw6EOQ?pwd=2333"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> BetterFBX</td>
+                        <td> 更好的FBX导入导出工具</td>
+                        <td> <span class="version">6.0.5</span></td>
+                        <td> <a href="https://pan.baidu.com/s/16punKi4wfCZ3Oz6lHHfhDw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Better Lighting V2</td>
+                        <td> 灯光照明插件-周年礼物</td>
+                        <td> <span class="version">2.1.0</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1E-Zk2ofh2HWQhYqoarcjrQ?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Blenderkit</td>
+                        <td> 在线模型材质资产库</td>
+                        <td> <span class="version">offcial</span></td>
+                        <td> <a href="https://www.blenderkit.com/get-blenderkit/" class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> BoxCutter</td>
+                        <td> 硬表面建模</td>
+                        <td> <span class="version">7.20.7</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1mMxDDVKKIJXCRdzNQ4I0Jg?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Baga Ivy</td>
+                        <td> 藤曼生成器</td>
+                        <td> <span class="version">2.0.2</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1o1tw1vh1ZfzyUExcfvrvhQ?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> CAD sketcher</td>
+                        <td> 类CAD绘图插件(Gumroad)</td>
+                        <td> <span class="version">0.27.6</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1kfCHI1QOgc3VB10feUSGRA?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> CAD Transform</td>
+                        <td> 类CAD变换吸附</td>
+                        <td> <span class="version">2.0.6</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1HUdUWV9ZBT2At1YU0wO8Bg?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Camera Calibration Pvr</td>
+                        <td> 相机求反(Github)</td>
+                        <td> <span class="version">0.5</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1Jot96CJgjVhFAxxUouo5lQ?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Clean Panels</td>
+                        <td> N面板清理</td>
+                        <td> <span class="version">7.0.3</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1TNJ_0ioasuFrLteBLc42Dw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Color helper</td>
+                        <td> 色卡插件</td>
+                        <td> <span class="version">铁锅炖内置</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1qxny4sNtbj_KJC26rw6EOQ?pwd=2333"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Construction Lines</td>
+                        <td> 仿SU构造线建模</td>
+                        <td> <span class="version">0.9.693</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1-y5vczCqrp90EriBQx_VFA?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Curves to Mesh</td>
+                        <td> 可编辑曲面建模转网格</td>
+                        <td> <span class="version">2.8.1</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1pVLOIlKj0Pa7ji4PHSxi8w?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Deepbump</td>
+                        <td> 法线贴图生成(Github)</td>
+                        <td> <span class="version">0.8.0</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1mIM4mqMC-2hhrNZkn_sibw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Easeam</td>
+                        <td> 一键标记缝合边</td>
+                        <td> <span class="version">1.1.0</span></td>
+                        <td> <a href="https://pan.baidu.com/s/15i8rCjL_5ZoOrXMr1MxIDg?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Engon</td>
+                        <td> 开源多资产库资源管理(Github)</td>
+                        <td> <span class="version">1.5</span></td>
+                        <td> <a href="https://pan.baidu.com/s/162_A3NevUDq9vzULqPbkGA?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Flow Pro Manager</td>
+                        <td> 资产管理</td>
+                        <td> <span class="version">4.0.2</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1r3FkIPg_U0paLERizKGxvA?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Geo Scatter</td>
+                        <td> 物体植物散布插件</td>
+                        <td> <span class="version">5.5.1</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1U5xFq-ZCmZBUt_tw5FiGjw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> G scatter</td>
+                        <td> 免费散布插件(gscatter.com)</td>
+                        <td> <span class="version">0.11.8</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1oeswlX1Zy3v5eUYHaCULnw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Hard Ops</td>
+                        <td> 硬表面建模</td>
+                        <td> <span class="version">0.9.88.7</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1-7Qt2auZCBELisOGOxiUVA?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> HDRI Sun Aligner</td>
+                        <td> HDR 日光对齐(Github)</td>
+                        <td> <span class="version">1.6</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1qKrMT2nvputhyfBRMdrlGg?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Homebuilder4</td>
+                        <td> 家装定制(creativedesigner3d.github.io)</td>
+                        <td> <span class="version">4.0.0</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1EZ5xspre8H1PN3vaFKfEXA?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Inset Outset</td>
+                        <td> 模型挤出偏移插件</td>
+                        <td> <span class="version">0.0.2</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1ssSX9wON-Kqpezx-j0KSCw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Instant Clean</td>
+                        <td> 一键清理</td>
+                        <td> <span class="version">2.2.0</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1ERJGafQTtrrtFXmSte_YMw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Kekit</td>
+                        <td> 小工具合集</td>
+                        <td> <span class="version">3.3.8</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1jPYn8JNGQ0e4pi_5EAgJsg?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Leafig</td>
+                        <td> 叶片生成 图片转模型</td>
+                        <td> <span class="version">1.0.11</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1apilzNY8Ieadle-sBj5M4A?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> MP7TOOLS</td>
+                        <td> 铁锅炖小组开源版M3</td>
+                        <td> <span class="version">铁锅炖内置</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1qxny4sNtbj_KJC26rw6EOQ?pwd=2333"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> MACHIN3tools</td>
+                        <td> U KNOW M3</td>
+                        <td> <span class="version">1.11.1</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1SshOBzIINmpiC_AVEIM8ug?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Max to blender</td>
+                        <td> max文件导入</td>
+                        <td> <span class="version">2024</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1xK4CZ4pZyiuyX39lng_6tA?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> MeasureIt ARCH</td>
+                        <td> measureit测量工具(Github)</td>
+                        <td> <span class="version">0.5.0</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1R3WklzdcbOmiHFIbvjs6oQ?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Mesh Cleaner</td>
+                        <td> 网格清理</td>
+                        <td> <span class="version">1.0.0</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1XuFWC12bZXhjRLm0eog5MQ?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> N Panel Sub Tabs</td>
+                        <td> N面板管理</td>
+                        <td> <span class="version">2.0.22</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1exud4cb1JtU9xb7DfVtazw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Node Preview</td>
+                        <td> 节点预览</td>
+                        <td> <span class="version">1.2.1</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1oVsCGzoEM4FKPHkrMwATeg?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Perspective Plotter</td>
+                        <td> 相机求反</td>
+                        <td> <span class="version">1.2.0</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1z8NNUe5b_LFLnhAVFpyncg?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Photographer</td>
+                        <td> 灯光相机插件</td>
+                        <td> <span class="version">5.4.14</span></td>
+                        <td> <a href="https://pan.baidu.com/s/11BYK3Nb7eZ68_jb2RGkHhQ?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Pie Menu Editor</td>
+                        <td> 自定义饼菜单</td>
+                        <td> <span class="version">1.18.8</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1B_gVRzAOxn_5SNUFMrJAAQ?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Pidgeon Tool Bag</td>
+                        <td> 工具包含超级降噪</td>
+                        <td> <span class="version">2.6.1</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1CdU7K0ZHR_D8TtPc3DjuyQ?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Polyhaven</td>
+                        <td> polyhaven开源资产库插件版</td>
+                        <td> <span class="version">1.1.10</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1YTu5OpF47StNoT5PjiSXTw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Profiler</td>
+                        <td> 门框阴角阳角框架精美形状轮廓高级曲线倒角工具</td>
+                        <td> <span class="version">1.8.0</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1TKPsY6kw6C0G1cecDDz5ww?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> QRemeshify</td>
+                        <td> 一键重拓扑</td>
+                        <td> <span class="version">1.1.0</span></td>
+                        <td> <a href="https://pan.baidu.com/s/18tS-5ycFH43b0ZfJdf4ozw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Quad Remesher</td>
+                        <td> 一键重拓扑</td>
+                        <td> <span class="version">1.3.0</span></td>
+                        <td> <a href="https://pan.baidu.com/s/15zaF0i0amGbTBRdMUsqNCQ?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Quick Decals</td>
+                        <td> 快速贴花插件</td>
+                        <td> <span class="version">2.1.0</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1FDepqUnAM1vxGEAhqPBUDw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Quick font</td>
+                        <td> 字体管理</td>
+                        <td> <span class="version">1.1</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1-hcwDoDiIjluzWo2JYukjw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> RARA blender helper</td>
+                        <td> blender综合助手</td>
+                        <td> <span class="version">铁锅炖内置</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1qxny4sNtbj_KJC26rw6EOQ?pwd=2333"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> REDHALO max2blender</td>
+                        <td> 红地蛋MAX模型导入</td>
+                        <td> <span class="version">0.9.5</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1-ouIO8QqpXYRmQlpEMzWgw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> REDHALO SketchUp Importer</td>
+                        <td> 红地蛋SU模型导入</td>
+                        <td> <span class="version">0.23.2</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1-ouIO8QqpXYRmQlpEMzWgw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Realtime materials</td>
+                        <td> 材质插件</td>
+                        <td> <span class="version">2.1.6</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1AKZqQjWeetpu8ywBxGNERA?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Render Raw</td>
+                        <td> 类camera raw调色插件</td>
+                        <td> <span class="version">1.0.1</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1NHITEYLBaDp7jGIRvdVRiQ?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Render Tools</td>
+                        <td> 材质ID分层渲染</td>
+                        <td> <span class="version">1.5.0</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1b9sm7WaP7FR4DIVUIz66ZA?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Round Insert</td>
+                        <td> 解决圆角内插穿模</td>
+                        <td> <span class="version">2.1.1</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1GUC-jdF_zA9lodz3W0UTOQ?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> SimpleTabs</td>
+                        <td> n面板管理插件</td>
+                        <td> <span class="version">1.2.4</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1e8RdyChUa2om2y7Bq9V8yA?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> ShaderPlus</td>
+                        <td> 高级着色节点含焦散-周年礼物</td>
+                        <td> <span class="version">4.0.4</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1cAH3GnpQCpFmr7-vonjUvw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Stamp it</td>
+                        <td> 一键贴花</td>
+                        <td> <span class="version">1.2.1</span></td>
+                        <td> <a href="https://pan.baidu.com/s/12dobyMeyoHGylMKTN6H9dg?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Super Texture</td>
+                        <td> 单图一键生成pbr材质</td>
+                        <td> <span class="version">1.8.5</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1nGnlqveXPV8lYNYPcV8KGw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> ToOptimize Tools</td>
+                        <td> 场景优化工具</td>
+                        <td> <span class="version">1.2.7.4</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1zphcCrlUS8_fJX4lexUqRg?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> TraceGenius</td>
+                        <td> 类图像描摹图片转曲线</td>
+                        <td> <span class="version">3.2.0</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1pEHsqgl1gERfWNWOGJ9qng?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> User Translate</td>
+                        <td> 翻译神器</td>
+                        <td> <span class="version">1.0.22</span></td>
+                        <td> <a href="https://pan.baidu.com/share/init?surl=MB47nNN-iUGnH2pTmTSmig&amp;pwd=bude"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Vector to 3D</td>
+                        <td> 矢量图转3D</td>
+                        <td> <span class="version">1.0.0</span></td>
+                        <td> <a href="https://pan.baidu.com/s/19YyREs2A3UOVVW7Hkglfvw?pwd=plug"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> w_mesh参数网格</td>
+                        <td> 参数化基础网格物体</td>
+                        <td> <span class="version">铁锅炖内置</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1qxny4sNtbj_KJC26rw6EOQ?pwd=2333"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> 输入法助手</td>
+                        <td> 修复Blender英文输入问题</td>
+                        <td> <span class="version">铁锅炖内置</span></td>
+                        <td> <a href="https://pan.baidu.com/s/1qxny4sNtbj_KJC26rw6EOQ?pwd=2333"
+                                class="download-btn">下载</a></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 官方库插件 -->
+        <div id="official" class="tab-content">
+            <table class="plugins-table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAllOfficial" class="install-check"></th>
+                        <th onclick="sortTable()">插件名称 <span class="sort-indicator"></span></th>
+                        <th>功能描述</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> 3D Print Toolbox</td>
+                        <td> 3D打印工具箱，有检查模型是否规范的功能</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> 3D Viewport Pie Menus</td>
+                        <td> 3D视口饼菜单</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> A.N.T.Landscape</td>
+                        <td> 地形插件</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Align Tools</td>
+                        <td> 对齐工具</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Archimesh</td>
+                        <td> 工具是特别设计用来生成建筑元素</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> AutoCAD DXF</td>
+                        <td> CAD DXF格式导入</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> BagaPie</td>
+                        <td> 几何节点参数化对楼梯、管道、瓷砖等</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> BAM</td>
+                        <td> auto mat 自动材质处理</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> BetterFBX</td>
+                        <td> 更好的FBX导入导出</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Bolt Factory</td>
+                        <td> 创建螺丝和螺母，并附有选项可以调节螺丝/螺母，沉槽类型和螺丝头类型</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Bonsai</td>
+                        <td> BIM工具</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Bool Tool</td>
+                        <td> 布尔工具</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Colorista</td>
+                        <td> 朔朔和辣椒的调色插件</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Curve Tools</td>
+                        <td> 插件提供对曲线进行操作和编辑的扩展工具。包含了几个 CAD 风格的曲线工具。</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Edge flow</td>
+                        <td> 帮助调整网格几何体以适应曲面</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Edit Mesh Tools</td>
+                        <td> 为Blender增加了几个内置工具中没有的工具</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Extra Curve Objects</td>
+                        <td> （curve）包含许多创建曲线物体的插件组合</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Extra Mesh Objects</td>
+                        <td> （mesh）创建网格物体的插件组合</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> F2</td>
+                        <td> 高级F 创建边/面</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Hot Node</td>
+                        <td> 节点组保存复用</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Import Autodesk MAX</td>
+                        <td> 导入max文件</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Import/Export Autocad DXF</td>
+                        <td> 导入导出dxf</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Is Key Free</td>
+                        <td> 用于检查快捷键的可用性和与之相关的编辑器类型</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Loop Tools</td>
+                        <td> 桥接放样等</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Matalogue</td>
+                        <td> 节点树列表</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Material Utilities</td>
+                        <td> 材质工具</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Measurelt</td>
+                        <td> 用于在视口中显示度量值，精确度量设计对象</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Mio3 UV</td>
+                        <td> 展uv插件</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Modifier List</td>
+                        <td> 修改器饼菜单/更好用的修改器工具</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Modifier Tools</td>
+                        <td> 管理修改器的小工具集</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> ND</td>
+                        <td> Non-Destructive 非破坏性建模</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Node Arrange</td>
+                        <td> 节点排列工具</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Node Wrangler</td>
+                        <td> 节点快捷键式操作</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Place Helper</td>
+                        <td> 辣椒酱放置助手</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Simple Deform Helper</td>
+                        <td> 辣椒酱简易型形变助手</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Sun Position</td>
+                        <td> 太阳位置&amp;hdri位置匹配</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> SZM</td>
+                        <td> 根据首字母搜索节点 支持中英文</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> tinyCAD Mesh tools</td>
+                        <td> 添加CAD的某些功能</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> Tri-lighting</td>
+                        <td> 一键三点打光</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> UniV</td>
+                        <td> UV编辑插件</td>
+                    </tr>
+
+                    <tr>
+                        <td> <input type="checkbox" class="install-check"></td>
+                        <td> UV Toolkit</td>
+                        <td> UV工具</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <script>
+            let currentSortState = 0; // 0:默认 1:正序 2:倒序
+            let originalOrder = [];
+            
+            document.addEventListener('DOMContentLoaded', () => {
+                saveOriginalOrder();
+                
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        switchTab(this.dataset.tab, this);
+                        saveOriginalOrder();
+                        currentSortState = 0;
+                        this.closest('.tab-nav').querySelectorAll('.sort-indicator').forEach(ind => ind.textContent = '');
                     });
-                    updateStats();
                 });
+            
+                initCheckboxes();
+                bindSearch();
+                updateStats();
             });
-
-            document.querySelectorAll('.install-check:not([id^="selectAll"])').forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    const table = this.closest('table');
-                    const allCheckboxes = table.querySelectorAll('.install-check:not([id^="selectAll"])');
-                    const master = table.querySelector('[id^="selectAll"]');
-                    master.checked = [...allCheckboxes].every(cb => cb.checked);
-                    updateStats();
+            
+            function exportToExcel() {
+                const activeTable = document.querySelector('.tab-content.active table');
+                const rows = Array.from(activeTable.querySelectorAll('tbody tr:not([style*="none"])'));
+                
+                const wsData = [
+                    [
+                        '选中状态',
+                        '插件名称',
+                        '功能描述',
+                        ...(activeTable.id === 'third-party' ? ['版本号', '下载链接'] : [])
+                    ]
+                ];
+            
+                rows.forEach(row => {
+                    const cells = [
+                        row.querySelector('.install-check').checked ? '✓' : '✗',
+                        row.cells[1].textContent,
+                        row.cells[2].textContent
+                    ];
+                    
+                    if (activeTable.id === 'third-party') {
+                        cells.push(
+                            row.cells[3].textContent,
+                            row.cells[4].querySelector('a').href
+                        );
+                    }
+                    
+                    wsData.push(cells);
                 });
-            });
-        }
-
-        function bindSearch() {
-            document.getElementById('searchInput').addEventListener('input', handleSearch);
-        }
-
-        function handleSearch() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const activeTable = document.querySelector('.tab-content.active table');
             
-            activeTable.querySelectorAll('tbody tr').forEach(row => {
-                const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                const desc = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-                row.style.display = (name.includes(searchTerm) || desc.includes(searchTerm)) 
-                    ? '' 
-                    : 'none';
-            });
-            updateStats();
-        }
-
-        function updateStats() {
-            const activeTable = document.querySelector('.tab-content.active table');
-            const total = activeTable.querySelectorAll('tbody tr').length;
-            const visible = activeTable.querySelectorAll('tbody tr:not([style*="none"])').length;
-            const selected = activeTable.querySelectorAll('.install-check:checked:not([id^="selectAll"])').length;
+                const ws = XLSX.utils.aoa_to_sheet(wsData);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "插件列表");
+                XLSX.writeFile(wb, `Blender插件_${document.querySelector('.tab-btn.active').textContent}.xlsx`);
+            }
             
-            document.getElementById('stats').innerHTML = `
-                显示 ${visible}/${total} 插件 | 已选中 ${selected} 项
-            `;
-        }
-    </script>
+            function saveOriginalOrder() {
+                const activeTable = document.querySelector('.tab-content.active table');
+                originalOrder = Array.from(activeTable.tBodies[0].rows);
+            }
+            
+            function sortTable() {
+                const activeTable = document.querySelector('.tab-content.active table');
+                const tbody = activeTable.tBodies[0];
+                const rows = Array.from(tbody.rows);
+                const indicator = activeTable.querySelector('th:nth-child(2) .sort-indicator');
+            
+                currentSortState = (currentSortState + 1) % 3;
+            
+                if (currentSortState === 0) {
+                    tbody.append(...originalOrder);
+                    indicator.textContent = '';
+                } else {
+                    const sortOrder = currentSortState === 1 ? 1 : -1;
+                    rows.sort((a, b) => {
+                        const nameA = a.cells[1].textContent.toLowerCase();
+                        const nameB = b.cells[1].textContent.toLowerCase();
+                        return sortOrder * nameA.localeCompare(nameB);
+                    });
+                    tbody.append(...rows);
+                    indicator.textContent = sortOrder === 1 ? '↑' : '↓';
+                }
+                updateStats();
+            }
+            
+            function switchTab(tabName, clickedButton) {
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.getElementById(tabName).classList.add('active');
+                clickedButton.classList.add('active');
+                handleSearch();
+                updateStats();
+            }
+            
+            function initCheckboxes() {
+                document.querySelectorAll('[id^="selectAll"]').forEach(checkbox => {
+                    checkbox.addEventListener('click', function(e) {
+                        const table = e.target.closest('table');
+                        table.querySelectorAll('.install-check:not([id^="selectAll"])').forEach(cb => {
+                            cb.checked = e.target.checked;
+                        });
+                        updateStats();
+                    });
+                });
+            
+                document.querySelectorAll('.install-check:not([id^="selectAll"])').forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        const table = this.closest('table');
+                        const allCheckboxes = table.querySelectorAll('.install-check:not([id^="selectAll"])');
+                        const master = table.querySelector('[id^="selectAll"]');
+                        master.checked = [...allCheckboxes].every(cb => cb.checked);
+                        updateStats();
+                    });
+                });
+            }
+            
+            function bindSearch() {
+                document.getElementById('searchInput').addEventListener('input', handleSearch);
+            }
+            
+            function handleSearch() {
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                const activeTable = document.querySelector('.tab-content.active table');
+                
+                activeTable.querySelectorAll('tbody tr').forEach(row => {
+                    const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                    const desc = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                    row.style.display = (name.includes(searchTerm) || desc.includes(searchTerm)) 
+                        ? '' 
+                        : 'none';
+                });
+                updateStats();
+            }
+            
+            function updateStats() {
+                const activeTable = document.querySelector('.tab-content.active table');
+                const total = activeTable.querySelectorAll('tbody tr').length;
+                const visible = activeTable.querySelectorAll('tbody tr:not([style*="none"])').length;
+                const selected = activeTable.querySelectorAll('.install-check:checked:not([id^="selectAll"])').length;
+                
+                document.getElementById('stats').innerHTML = `
+                    显示 ${visible}/${total} 插件 | 已选中 ${selected} 项
+                `;
+            }
+        </script>
 
-</body></html>
+    </body>
+
+</html>
