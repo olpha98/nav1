@@ -1,0 +1,19 @@
+<svg
+  viewBox="0 0 32 32"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- 游戏手柄形状 -->
+  <path
+    d="M26 12C26 6.477 21.523 2 16 2S6 6.477 6 12c0 4.478 2.943 8.268 7 9.542V26l3-2 3 2v-4.458c4.057-1.274 7-5.064 7-9.542z"
+    fill="#EC4899"
+  />
+  <!-- 分享图标 -->
+  <path
+    d="M16 8l-3 3h2v4h2v-4h2l-3-3z"
+    fill="#FFFFFF"
+  />
+  <!-- 装饰圆点 -->
+  <circle cx="20" cy="12" r="1.5" fill="#FFFFFF" />
+  <circle cx="12" cy="12" r="1.5" fill="#FFFFFF" />
+</svg> 
